@@ -1,3 +1,5 @@
+import TwoDeeGraphics.gfx.SpriteSheet;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -20,6 +22,7 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     public int refreshCount=0; //how many times has the screen refreshed?
     private BufferedImage image= new BufferedImage(FRAMEWIDTH,FRAMEHEIGHT,BufferedImage.TYPE_INT_RGB); //an image
     private int[] pixels=((DataBufferInt)image.getRaster().getDataBuffer()).getData(); //TODO learn what this is? Ik vaguely it's "pixels in image"
+    private SpriteSheet pinksquare = new SpriteSheet("/8x8SpriteSheet.png");
 
     //Class constructor, sets up frame
     public TwoDeeAdventures(){
