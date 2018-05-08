@@ -18,7 +18,7 @@ public class SpriteSheet {
         //Makes image, reads image from file
         BufferedImage image= null;
         try {
-            image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path)); //TODO fix the damn null pointer
+            image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,5 +39,6 @@ public class SpriteSheet {
         for(int i=0;i<8;i++){
             System.out.println(pixels[i]);
         }
+
     }
 }
