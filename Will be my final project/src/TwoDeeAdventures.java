@@ -1,3 +1,4 @@
+import TwoDeeGraphics.gfx.Scren;
 import TwoDeeGraphics.gfx.SpriteSheet;
 
 import javax.swing.*;
@@ -11,25 +12,26 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     private static final long serialVersionUID=1;
 
     //Window constants
-    public static final int FRAMEWIDTH=800; //width of window
-    public static final int FRAMEHEIGHT=(3*FRAMEWIDTH)/4; //height of window, scaled to width
-    public static final int SCALE=1; //will be for scaling stuff up and down later?
+    public static final int FRAME_WIDTH =160; //width of window
+    public static final int FRAME_HEIGHT =(3* FRAME_WIDTH)/4; //height of window, scaled to width
+    public static final int SCALE=4; //will be for scaling stuff up and down later?
     public static final String NAME="Two-Dee Adventures"; //titlebar text
 
     //fields
     private JFrame frame;
     public boolean isGameOn=false; //tells me if the game is running
     public int refreshCount=0; //how many times has the screen refreshed?
-    private BufferedImage image= new BufferedImage(FRAMEWIDTH,FRAMEHEIGHT,BufferedImage.TYPE_INT_RGB); //an image
+    private BufferedImage image= new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT,BufferedImage.TYPE_INT_RGB); //an image
     private int[] pixels=((DataBufferInt)image.getRaster().getDataBuffer()).getData(); //TODO learn what this is? Ik vaguely it's "pixels in image"
-    private SpriteSheet pinksquare = new SpriteSheet("/8x8SpriteSheet.png");
+
+    private Scren screen;
 
     //Class constructor, sets up frame
     public TwoDeeAdventures(){
         //These three lines are setting the window size
-        setMinimumSize(new Dimension(FRAMEWIDTH*SCALE,FRAMEHEIGHT*SCALE));
-        setMaximumSize(new Dimension(FRAMEWIDTH*SCALE,FRAMEHEIGHT*SCALE));
-        setPreferredSize(new Dimension(FRAMEWIDTH*SCALE,FRAMEHEIGHT*SCALE));
+        setMinimumSize(new Dimension(FRAME_WIDTH *SCALE, FRAME_HEIGHT *SCALE));
+        setMaximumSize(new Dimension(FRAME_WIDTH *SCALE, FRAME_HEIGHT *SCALE));
+        setPreferredSize(new Dimension(FRAME_WIDTH *SCALE, FRAME_HEIGHT *SCALE));
 
         frame=new JFrame(NAME); //Frame initialized
 
@@ -43,7 +45,12 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
         frame.setVisible(true);
     }
 
-    //makes thread of game, so that it has a place to  without interfering with main thread
+    //initialize my scren
+    public void screenInit(){
+        screen=new Scren(FRAME_WIDTH,FRAME_HEIGHT, new SpriteSheet("/8x8SpriteSheet.png"));
+    }
+
+    //makes thread of game, so that it has a place to run without interfering with main thread
     public synchronized void start(){
         isGameOn=true;
         new Thread(this).start();
@@ -66,6 +73,8 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
 
         long timeCheckNew=System.currentTimeMillis(); //last time we updated
         double nanosPassed=0;
+
+        screenInit();
 
         while(isGameOn){
             //limits frame rate     tutorial didn't explain how this works, //TODO ask seth/shai about the logic here
@@ -95,7 +104,7 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
         }
     }
 
-    //"tick" method. Refreshes the game-logic
+        //"tick" method. Refreshes the game-logic
     public void refresh(){
         refreshCount++;
 
@@ -113,11 +122,12 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
             return;
         }
 
+        screen.render(pixels,0,FRAME_WIDTH);
+
         //draws stuff on screen
         Graphics g=bs.getDrawGraphics();
         //For now draws moving images
         g.drawImage(image,0,0,getWidth(),getHeight(),null);
-        g.fillOval(refreshCount,refreshCount,refreshCount,refreshCount);
         //Frees up memory since g isn't using it for anything
         g.dispose();
         bs.show();
