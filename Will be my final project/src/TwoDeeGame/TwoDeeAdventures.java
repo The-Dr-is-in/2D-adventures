@@ -1,3 +1,5 @@
+package TwoDeeGame;
+
 import TwoDeeGraphics.gfx.Scren;
 import TwoDeeGraphics.gfx.SpriteSheet;
 
@@ -25,6 +27,7 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     private int[] pixels=((DataBufferInt)image.getRaster().getDataBuffer()).getData(); //TODO learn what this is? Ik vaguely it's "pixels in image"
 
     private Scren screen;
+    public PlayerInput input;
 
     //Class constructor, sets up frame
     public TwoDeeAdventures(){
@@ -46,8 +49,9 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     }
 
     //initialize my scren
-    public void screenInit(){
+    public void init(){
         screen=new Scren(FRAME_WIDTH,FRAME_HEIGHT, new SpriteSheet("/8x8SpriteSheet.png"));
+        input=new PlayerInput(this);
     }
 
     //makes thread of game, so that it has a place to run without interfering with main thread
@@ -74,7 +78,7 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
         long timeCheckNew=System.currentTimeMillis(); //last time we updated
         double nanosPassed=0;
 
-        screenInit();
+        init();
 
         while(isGameOn){
             //limits frame rate     tutorial didn't explain how this works, //TODO ask seth/shai about the logic here
@@ -107,6 +111,11 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
         //"tick" method. Refreshes the game-logic
     public void refresh(){
         refreshCount++;
+
+        if(input.up.isPressed()){screen.yOffset--;}
+        if(input.down.isPressed()){screen.yOffset++;}
+        if(input.right.isPressed()){screen.xOffset++;}
+        if(input.left.isPressed()){screen.yOffset--;}
 
         for(int i=0; i<pixels.length; i++){
             pixels[i]=i+refreshCount;
