@@ -2,8 +2,6 @@ package TwoDeeGame;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerInput implements KeyListener {
 
@@ -14,15 +12,16 @@ public class PlayerInput implements KeyListener {
 
     //Defines what a key on the keyboard is
     public class Key{
+        private int timesPressed=0;
         private Boolean pressed=false;
 
-        //getter for isPressed
-        public boolean isPressed(){
+        //getter for isItPressed
+        public boolean isItPressed(){
             return pressed;
         }
 
         public void toggle(Boolean isPressed){
-            isPressed=pressed;
+            pressed=isPressed;
         }
     }
 

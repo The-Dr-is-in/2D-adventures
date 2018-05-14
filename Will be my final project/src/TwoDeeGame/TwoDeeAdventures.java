@@ -112,10 +112,12 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     public void refresh(){
         refreshCount++;
 
-        if(input.up.isPressed()){screen.yOffset--;}
-        if(input.down.isPressed()){screen.yOffset++;}
-        if(input.right.isPressed()){screen.xOffset++;}
-        if(input.left.isPressed()){screen.yOffset--;}
+        if(input.up.isItPressed()){screen.yOffset--;}
+        if(input.down.isItPressed()){screen.yOffset++;}
+        if(input.right.isItPressed()){screen.xOffset++;}
+        if(input.left.isItPressed()){screen.xOffset--;}
+
+        System.out.println(screen.yOffset);
 
         for(int i=0; i<pixels.length; i++){
             pixels[i]=i+refreshCount;
