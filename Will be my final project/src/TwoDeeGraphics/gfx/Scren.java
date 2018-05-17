@@ -6,7 +6,7 @@ public class Scren {
     public static final int MAP_WIDTH=64;
     public static final int MAP_WIDTH_MASK=MAP_WIDTH-1;
 
-    public int[] tiles=new int[MAP_WIDTH*MAP_WIDTH]; //says to computer where tiles are
+    public int[] pixel; //is my pixel data
     public int[] colors=new int[MAP_WIDTH*MAP_WIDTH*4]; //says to computer what color the tile is
 
     //variables that tell the screen to take up the whole window
@@ -28,62 +28,30 @@ public class Scren {
         this.sheet=sheet;
 
 
-        //fills colors[] with actual data on my colors
-        for(int i=0; i<MAP_WIDTH*MAP_WIDTH; i++){
-            colors[i*4/* +0 */]=0xff00ff; //each of the 4 colors are assigned something
-            colors[i*4+1]=0x00ffff;
-            colors[i*4+2]=0xffff00;
-            colors[i*4+3]=0xffffff;
+        pixel=new int[width*height];//init pixel data array
+        }
+
+    public void render(int xPosition, int yPosition, int currentTile, int color){
+    xPosition -= xOffset;
+    yPosition -= yOffset;
+
+    // %8 gives me tile location on an 8x8 sprite sheet
+    int xTile=currentTile%8;
+    int yTile=currentTile/32;
+    int tileOffset=(xTile<<3)+(yTile<<3)*sheet.width;
+
+    for(int y=0; y<8; y++){
+
+        if(y+yPosition<0 || y+yPosition>=height) continue;
+        int ySheet=y;
+
+        for(int x=0; x<8; y++){
+            if(x+xPosition<0 || x+xPosition>=width) continue;
+            int xSheet=x;
+            int localColor=(color>>(sheet.pixels[xSheet+ySheet*sheet.width+tileOffset]*8))&255; //what color is it looking at right now?
+            if(localColor<255) pixel[(x+xPosition+(y+yPosition))*width]=localColor; //TODO this is my null pointer line?
         }
     }
-
-    public void render(int[] pixels, int offset, int row) {
-
-        //TODO Figure this out: no clue what the logic here is, or what the ">>" symbol does
-        for (int yTile = yOffset >> 3; yTile <= (yOffset + height) >> 3; yTile++) {
-
-            //Sets minimum and maximum tile
-            int yMin = yTile * 8 - yOffset;
-            int yMax = yMin + 8;
-
-            //simple "stay in bounds" statement
-            if (yMin < 0)
-                yMin = 0;
-
-            if (yMax > height)
-                yMax = height;
-
-
-            //Same comment as last loop
-            for (int xTile = xOffset >> 3; xTile <= (xOffset + width) >> 3; xTile++) {
-
-                //Sets minimum and maximum tile
-                int xMin = xTile * 8 - xOffset;
-                int xMax = xMin + 8;
-
-                //simple "stay in bounds" statement
-                if (xMin < 0)
-                    xMin = 0;
-
-                if (xMax > width)
-                    xMax = width;
-
-
-                int tileIndex = (xTile & (MAP_WIDTH_MASK)) + (yTile & (MAP_WIDTH_MASK)) * MAP_WIDTH;
-
-                for(int y=yMin; y<yMax; y++){
-                    int sheetCurrentPixel=((y+yOffset)&7) * sheet.width+((xMin+xOffset)&7); //where am I in the sprite sheet?
-                    int tileCurrentPixel=offset + xMin + y * row; //Where am I in the game?
-
-                    for(int x=xMin; x<xMax; x++){
-                        int color = tileIndex*4+sheet.pixels[sheetCurrentPixel++]; //what color is my tile?
-                        pixels[tileCurrentPixel++]=colors[color]; //sets color
-                    }
-                }
-
-            }
-
-        }
 
     }
 

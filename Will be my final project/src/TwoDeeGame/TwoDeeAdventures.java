@@ -25,6 +25,8 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     public int refreshCount=0; //how many times has the screen refreshed?
     private BufferedImage image= new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT,BufferedImage.TYPE_INT_RGB); //an image
     private int[] pixels=((DataBufferInt)image.getRaster().getDataBuffer()).getData(); //TODO learn what this is? Ik vaguely it's "pixels in image"
+    private int[] colors=new int[216]; //stores shades of colors. Is 6*6*6, hexadecimal notation and Red Green Blue
+
 
     private Scren screen;
     public PlayerInput input;
@@ -49,7 +51,23 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     }
 
     //initialize my scren
+    //initmethod  (this comment is just for easy ctrl+f access)
     public void init(){
+        int index=0;
+        //populates color array
+        for(int red=0; red<6;red++){
+            for(int green=0; green<6;green++){
+                for(int blue=0; blue<6;blue++){
+                    int r=(red*255/5);  //represents red, 255/5 is so we have 4 shades+ a transparent shade
+                    int g=(red*255/5);  //represents blue
+                    int b=(red*255/5);  //represents green
+                    colors[index++]=r<<16 | g<<8 | b; //TODO why are these shifted?
+                }
+            }
+        }
+
+
+        //initing some additional stuff
         screen=new Scren(FRAME_WIDTH,FRAME_HEIGHT, new SpriteSheet("/8x8SpriteSheet.png"));
         input=new PlayerInput(this);
     }
@@ -117,8 +135,6 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
         if(input.right.isItPressed()){screen.xOffset++;}
         if(input.left.isItPressed()){screen.xOffset--;}
 
-        System.out.println(screen.yOffset);
-
         for(int i=0; i<pixels.length; i++){
             pixels[i]=i+refreshCount;
         }
@@ -133,8 +149,19 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
             return;
         }
 
-        screen.render(pixels,0,FRAME_WIDTH);
+        //nabs me my color data and renders stuff
+        for(int y=0; y<8; y++){
+            for(int x=0; x<8; x++){
+                screen.render(x<<3,y<<3, 0, ColorManager.get(555,500,050,005));
+            }
+        }
 
+        for(int y=0; y<screen.height; y++){
+           for (int x=0; x<screen.width; x++){
+                int colorCode=screen.pixel[x+y * screen.width];
+                if(colorCode<255)pixels[x+y*FRAME_WIDTH]=colors[colorCode];
+           }
+        }
         //draws stuff on screen
         Graphics g=bs.getDrawGraphics();
         //For now draws moving images
