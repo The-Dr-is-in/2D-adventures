@@ -8,6 +8,7 @@ public class PlayerInput implements KeyListener {
     //constructor that adds in key listeners
     public PlayerInput(TwoDeeAdventures game){
        game.addKeyListener(this);
+       game.requestFocus();
     }
 
     //Defines what a key on the keyboard is

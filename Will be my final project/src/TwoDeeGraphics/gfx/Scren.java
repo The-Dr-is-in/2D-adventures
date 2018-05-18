@@ -45,11 +45,11 @@ public class Scren {
         if(y+yPosition<0 || y+yPosition>=height) continue;
         int ySheet=y;
 
-        for(int x=0; x<8; y++){
+        for(int x=0; x<8; x++){
             if(x+xPosition<0 || x+xPosition>=width) continue;
             int xSheet=x;
             int localColor=(color>>(sheet.pixels[xSheet+ySheet*sheet.width+tileOffset]*8))&255; //what color is it looking at right now?
-            if(localColor<255) pixel[(x+xPosition+(y+yPosition))*width]=localColor; //TODO this is my null pointer line?
+            if(localColor<255) pixel[(x+xPosition)+(y+yPosition)*width]=localColor; //TODO this is my null pointer line?
         }
     }
 

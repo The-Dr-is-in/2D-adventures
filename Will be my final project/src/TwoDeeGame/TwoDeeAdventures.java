@@ -25,7 +25,7 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     public int refreshCount=0; //how many times has the screen refreshed?
     private BufferedImage image= new BufferedImage(FRAME_WIDTH, FRAME_HEIGHT,BufferedImage.TYPE_INT_RGB); //an image
     private int[] pixels=((DataBufferInt)image.getRaster().getDataBuffer()).getData(); //TODO learn what this is? Ik vaguely it's "pixels in image"
-    private int[] colors=new int[216]; //stores shades of colors. Is 6*6*6, hexadecimal notation and Red Green Blue
+    private int[] colors=new int[255]; //stores shades of colors. Is 6*6*6, hexadecimal notation and Red Green Blue
 
 
     private Scren screen;
@@ -59,8 +59,8 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
             for(int green=0; green<6;green++){
                 for(int blue=0; blue<6;blue++){
                     int r=(red*255/5);  //represents red, 255/5 is so we have 4 shades+ a transparent shade
-                    int g=(red*255/5);  //represents blue
-                    int b=(red*255/5);  //represents green
+                    int g=(green*255/5);  //represents blue
+                    int b=(blue*255/5);  //represents green
                     colors[index++]=r<<16 | g<<8 | b; //TODO why are these shifted?
                 }
             }
@@ -130,10 +130,10 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
     public void refresh(){
         refreshCount++;
 
-        if(input.up.isItPressed()){screen.yOffset--;}
-        if(input.down.isItPressed()){screen.yOffset++;}
-        if(input.right.isItPressed()){screen.xOffset++;}
-        if(input.left.isItPressed()){screen.xOffset--;}
+        if(input.up.isItPressed()){screen.yOffset++;}
+        if(input.down.isItPressed()){screen.yOffset--;}
+        if(input.right.isItPressed()){screen.xOffset--;}
+        if(input.left.isItPressed()){screen.xOffset++;}
 
         for(int i=0; i<pixels.length; i++){
             pixels[i]=i+refreshCount;
@@ -159,7 +159,7 @@ public class TwoDeeAdventures extends Canvas implements Runnable {
         for(int y=0; y<screen.height; y++){
            for (int x=0; x<screen.width; x++){
                 int colorCode=screen.pixel[x+y * screen.width];
-                if(colorCode<255)pixels[x+y*FRAME_WIDTH]=colors[colorCode];
+                if(colorCode<colors.length)pixels[x+y*FRAME_WIDTH]=colors[colorCode];
            }
         }
         //draws stuff on screen

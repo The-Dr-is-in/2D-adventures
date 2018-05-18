@@ -9,8 +9,8 @@ public class ColorManager {
     private static int get(int color) {
     if(color<0) return 255;
     int red=color/100%10;
-    int green=color/10%10;
-    int blue=color%10;
+    int green=color/10;
+    int blue=color;
     return red*36 + green*6 + blue;
     }
 
